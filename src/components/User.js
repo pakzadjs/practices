@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
+
+import { isInCart, quantityCount } from "../helper/functions";
+
+import { CartContext } from "../context/CartContextProvider";
+
 import {
   Box,
-  Grid,
+  // Grid,
   Card,
   Button,
-  CardMedia,
   Typography,
   createTheme,
   ThemeProvider,
@@ -16,6 +20,8 @@ import CardContent from "@mui/material/CardContent";
 const theme = createTheme();
 
 const User = ({ user }) => {
+  const { state, dispatch } = useContext(CartContext);
+
   return (
     <ThemeProvider theme={theme}>
       <Box>
@@ -31,13 +37,28 @@ const User = ({ user }) => {
               <Typography gutterBottom variant="h5" component="h2">
                 {user.name}
               </Typography>
-              <Typography>
-                {user.email}
-              </Typography>
+              <Typography>{user.email}</Typography>
             </CardContent>
             <CardActions>
-              <Button size="small">Select</Button>
-              <Button size="small">Remove</Button>
+              {quantityCount(state, user.id) < 1 && (
+                <Button
+                  size="small"
+                  onClick={() => dispatch({ type: "ADD_ITEM", payload: user })}
+                >
+                  Select
+                </Button>
+              )}
+
+              {quantityCount(state, user.id) === 1 && (
+                <Button
+                  size="small"
+                  onClick={() =>
+                    dispatch({ type: "REMOVE_ITEM", payload: user })
+                  }
+                >
+                  Remove
+                </Button>
+              )}
             </CardActions>
           </Card>
         </Container>
