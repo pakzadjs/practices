@@ -4,8 +4,6 @@ import { useEffect } from "react";
 const initialState = {
   selectedItems: [],
   itemsCounter: 0,
-  total: 0,
-  checkout: false,
 };
 
 const initializer = (initialValue = initialState) =>
@@ -48,20 +46,6 @@ const cartReducer = (state, action) => {
         ...state,
         selectedItems: [...newSelectedItems],
         ...sumItems(newSelectedItems),
-      };
-    case "CHECKOUT":
-      return {
-        selectedItems: [],
-        itemsCounter: 0,
-        total: 0,
-        checkout: true,
-      };
-    case "CLEAR":
-      return {
-        selectedItems: [],
-        itemsCounter: 0,
-        total: 0,
-        checkout: false,
       };
     default:
       return state;

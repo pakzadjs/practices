@@ -1,20 +1,30 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 import { Grid, Typography } from "@mui/material";
 
 import User from "./User";
-import SelectedUsers from "./SelectedUsers";
+import SelectedUsers from "./SelectedUser";
 
-import { UsersContext } from "../context/UsersContextProvider";
-import { CartContext } from "../context/CartContextProvider";
+import { fetchUsers } from "../redux/users/usersAction";
+
+import { UsersContext } from "../store/UsersContextProvider";
+import { CartContext } from "../store/CartContextProvider";
+
+import { useSelector, useDispatch } from "react-redux";
 
 const Users = () => {
   const usersData = useContext(UsersContext);
   const { state } = useContext(CartContext);
 
-  const selectedUser = state?.selectedItems;
+  // const selectedUser = state?.selectedItems;
 
-  console.log(selectedUser);
+  const dispatch = useDispatch();
+  const usersState = useSelector((state) => state.usersState);
+  const selectedUser = useSelector((state) => state.cartState);
+
+  useEffect(() => {
+    if (!usersState.users.length) dispatch(fetchUsers());
+  }, []);
 
   return (
     <>
@@ -31,11 +41,17 @@ const Users = () => {
         All Users
       </Typography>
 
-      <Grid item>
-        {usersData?.map((user) => (
-          <User key={user.id} user={user} />
-        ))}
-      </Grid>
+      {usersState.loading ? (
+        <h2>Loading...</h2>
+      ) : usersState.error ? (
+        <h2>Somthing went wrong</h2>
+      ) : (
+        <Grid item>
+          {usersState.users.map((user) => (
+            <User key={user.id} user={user} />
+          ))}
+        </Grid>
+      )}
 
       <Typography
         sx={{
@@ -51,7 +67,7 @@ const Users = () => {
       </Typography>
 
       <Grid container>
-        {selectedUser?.map((user) => (
+        {selectedUser?.selectedItems?.map((user) => (
           <SelectedUsers key={user.id} selectedUser={user} />
         ))}
       </Grid>

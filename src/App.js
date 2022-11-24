@@ -1,15 +1,17 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
 
 import Users from "./components/Users";
 
+import store from "./redux/store";
+
 function App() {
   return (
-    // <UsersContextProvider>
-    <Routes>
-      <Route path="/" element={<Users />} />
-    </Routes>
-    // </UsersContextProvider>
+    <>
+      <Provider store={store}>
+        <Users />
+      </Provider>
+    </>
   );
 }
 

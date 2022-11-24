@@ -1,6 +1,10 @@
 import React, { useContext } from "react";
 
-import { CartContext } from "../context/CartContextProvider";
+import { CartContext } from "../store/CartContextProvider";
+import { useSelector, useDispatch } from "react-redux";
+
+import { removeItem } from "../redux/cart/cartAction";
+
 import { isInCart, quantityCount } from "../helper/functions";
 
 import {
@@ -17,7 +21,12 @@ import {
 const theme = createTheme();
 
 const SelectedUsers = ({ selectedUser }) => {
-  const { state, dispatch } = useContext(CartContext);
+  // const { state, dispatch } = useContext(CartContext);
+
+  const state = useSelector((state) => state.cartState);
+  const dispatch = useDispatch();
+
+  console.log(state);
 
   return (
     <ThemeProvider theme={theme}>
@@ -71,9 +80,7 @@ const SelectedUsers = ({ selectedUser }) => {
               {quantityCount(state, selectedUser.id) === 1 && (
                 <Button
                   size="small"
-                  onClick={() =>
-                    dispatch({ type: "REMOVE_ITEM", payload: selectedUser })
-                  }
+                  onClick={() => dispatch(removeItem(selectedUser))}
                 >
                   Remove
                 </Button>

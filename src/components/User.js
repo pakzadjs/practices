@@ -2,7 +2,11 @@ import React, { useContext } from "react";
 
 import { isInCart, quantityCount } from "../helper/functions";
 
-import { CartContext } from "../context/CartContextProvider";
+import { CartContext } from "../store/CartContextProvider";
+
+import { useSelector, useDispatch } from "react-redux";
+
+import { addItem, removeItem } from "../redux/cart/cartAction";
 
 import {
   Box,
@@ -20,7 +24,12 @@ import CardContent from "@mui/material/CardContent";
 const theme = createTheme();
 
 const User = ({ user }) => {
-  const { state, dispatch } = useContext(CartContext);
+  // const { state, dispatch } = useContext(CartContext);
+
+  const state = useSelector((state) => state.cartState);
+  const dispatch = useDispatch();
+
+  // console.log(state)
 
   return (
     <ThemeProvider theme={theme}>
@@ -41,21 +50,13 @@ const User = ({ user }) => {
             </CardContent>
             <CardActions>
               {quantityCount(state, user.id) < 1 && (
-                <Button
-                  size="small"
-                  onClick={() => dispatch({ type: "ADD_ITEM", payload: user })}
-                >
+                <Button size="small" onClick={() => dispatch(addItem(user))}>
                   Select
                 </Button>
               )}
 
               {quantityCount(state, user.id) === 1 && (
-                <Button
-                  size="small"
-                  onClick={() =>
-                    dispatch({ type: "REMOVE_ITEM", payload: user })
-                  }
-                >
+                <Button size="small" onClick={() => dispatch(removeItem(user))}>
                   Remove
                 </Button>
               )}
